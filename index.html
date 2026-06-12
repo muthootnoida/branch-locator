@@ -69,6 +69,13 @@
   .more{display:block; margin:22px auto 0;}
   footer{text-align:center; color:#9a95b5; font-size:12px; margin-top:44px;}
 
+  #goTop{position:fixed; bottom:26px; right:26px; z-index:50; width:48px; height:48px; border-radius:50%;
+    background:var(--red); color:#fff; border:none; cursor:pointer; font-size:20px; line-height:1;
+    box-shadow:0 6px 18px rgba(0,0,0,.28); display:none; align-items:center; justify-content:center;
+    transition:background .15s, transform .15s;}
+  #goTop:hover{background:var(--red-dark); transform:translateY(-2px);}
+  #goTop.show{display:flex;}
+
   #app{display:none;}
   .gate{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--navy); padding:20px;}
   .gate-card{background:var(--navy2); border:1px solid var(--line); border-radius:18px; padding:38px 36px; width:100%; max-width:420px; text-align:center;}
@@ -135,6 +142,7 @@
   <button class="btn btn-ghost more" id="moreBtn" style="display:none; color:var(--ink); border-color:#cfc6b2;" onclick="showMore()">Show more results</button>
   <footer>ICCS &times; Muthoot Finance &middot; Internal tool for contact centre advisors</footer>
 </div>
+<button id="goTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Go to top" aria-label="Go to top">&#8679;</button>
 </div>
 
 <script src="data.enc.js"></script>
@@ -221,8 +229,11 @@ function setTab(k){ activeTab = k; shown = 0; render(); }
 function card(b){
   const head = b.head ? `<span class="tag">&#128100; ${esc(b.head)}</span>` : '';
   const bc = b.bc ? `<span class="tag">Branch code ${esc(b.bc)}</span>` : '';
+  const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
+  const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
+  const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
   return `<div class="card">
-    <div class="card-top"><h3>${esc(b.name)}</h3><span class="chip">TC ${esc(b.tc)||'—'}</span></div>
+    <div class="card-top"><h3>${esc(b.name)}</h3>${tcChip}</div>
     <div class="addr">${esc(b.addr)}</div>
     <div class="tags">
       ${b.pin?`<span class="tag pin">PIN ${esc(b.pin)}</span>`:''}
@@ -231,7 +242,7 @@ function card(b){
       ${b.region?`<span class="tag">Region: ${esc(b.region)}</span>`:''}
       ${bc}${head}
     </div>
-    <button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>
+    ${copyBtn}
   </div>`;
 }
 
@@ -276,6 +287,7 @@ function showMore(){ shown += PAGE; render(); }
 
 function runSearch(){
   lastQuery = document.getElementById('q').value.trim().toLowerCase();
+  activeTab = 'MFL'; // every new search starts on MFL Branches
   shown = 0;
   render();
 }
@@ -285,6 +297,11 @@ function clearSearch(){
   render();
 }
 document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') runSearch(); });
+
+const goTopBtn = document.getElementById('goTop');
+window.addEventListener('scroll', () => {
+  goTopBtn.classList.toggle('show', window.scrollY > 400);
+}, {passive:true});
 </script>
 </body>
 </html>
