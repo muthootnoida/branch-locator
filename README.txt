@@ -1,31 +1,307 @@
-# Muthoot Finance Branch Locator — Deployment Guide
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muthoot Finance — Branch Locator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#191731; --navy2:#1e1b3a; --navy3:#262247;
+    --red:#d62f2f; --red-dark:#b32424; --gold:#e8a33d;
+    --cream:#f4f1ea; --ink:#23213a; --muted:#8e8aa8; --line:#3a3660;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{font-family:'Poppins',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh;}
 
-Built from: Branch Master Sheet, 10 June 2026 (shared by Garima Sharma)
+  .nav{background:var(--navy); display:flex; align-items:center; justify-content:space-between; padding:12px 28px; position:sticky; top:0; z-index:10;}
+  .brand{display:flex; align-items:center; gap:14px;}
+  .logo-chip{background:#fff; border-radius:10px; padding:5px 10px; display:flex; align-items:center;}
+  .logo-chip img{height:34px; display:block;}
+  .brand-divider{width:1px; height:34px; background:var(--line);}
+  .brand-text b{color:#fff; font-size:16px; display:block; line-height:1.2;}
+  .brand-text span{color:var(--gold); font-size:10.5px; font-weight:600; letter-spacing:2px;}
+  .nav-right{color:#cfcce4; font-size:12.5px; background:var(--navy3); border:1px solid var(--line); padding:7px 14px; border-radius:999px;}
+  .nav-right .lock{color:var(--gold); margin-right:6px;}
 
-## What's in this folder
-- index.html — the Branch Locator tool (design matched to the current site)
-- data.js — all branch data (MFL: 2,079 | MML: 1,017 | South: 3,297 after removing 1,812 duplicates already present in MFL)
+  .wrap{max-width:1080px; margin:0 auto; padding:28px 20px 60px;}
 
-## Option A — Update the existing site (easiest)
-The current locator lives at nishantnarendra.github.io/Muthoot/, which is on
-Nishant Sir's GitHub account. Send him both files and ask him to:
-1. Open github.com and go to his repository named "branch-locator"
-2. Click "Add file" → "Upload files"
-3. Drag both index.html and data.js in (this replaces the old ones)
-4. Click "Commit changes"
-The live site updates automatically within 1–2 minutes. Nothing else needed.
+  .hero{background:var(--navy2); border-radius:18px; padding:38px 40px 34px; position:relative; overflow:hidden;}
+  .hero::after{content:''; position:absolute; right:-60px; top:-60px; width:260px; height:260px; border-radius:50%; background:rgba(214,47,47,.08);}
+  .hero h1{color:#fff; font-size:32px; font-weight:700;}
+  .hero h1 em{color:var(--gold); font-style:normal;}
+  .hero p{color:#b9b5d4; font-size:14px; margin:6px 0 20px;}
+  .search-row{display:flex; gap:12px; flex-wrap:wrap; position:relative; z-index:1;}
+  .search-row input{flex:1; min-width:240px; background:#2a2750; border:1.5px solid var(--line); color:#fff; font-family:inherit; font-size:15px; padding:14px 18px; border-radius:12px; outline:none;}
+  .search-row input::placeholder{color:#8e8aa8;}
+  .search-row input:focus{border-color:var(--gold);}
+  .btn{font-family:inherit; font-size:14.5px; font-weight:600; border:none; border-radius:12px; padding:14px 26px; cursor:pointer; transition:background .15s;}
+  .btn-red{background:var(--red); color:#fff;}
+  .btn-red:hover{background:var(--red-dark);}
+  .btn-ghost{background:transparent; color:#cfcce4; border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:#cfcce4;}
+  .hero .hint{color:#8e8aa8; font-size:12px; margin:12px 0 0;}
+  .hero .hint kbd{background:#2a2750; border:1px solid var(--line); border-radius:4px; padding:1px 6px; font-family:inherit;}
 
-## Option B — Host it on your own GitHub account
-1. Go to github.com and click Sign up (free) — use your work email
-2. After signing in, click the "+" (top right) → "New repository"
-3. Name it: branch-locator → tick "Public" → Create repository
-4. Click "uploading an existing file" → drag in index.html and data.js → Commit
-5. Go to Settings → Pages (left sidebar)
-6. Under "Branch", choose "main" and "/ (root)" → Save
-7. Wait 2 minutes. Your site will be live at:
-   https://YOUR-USERNAME.github.io/branch-locator/
+  .tabs{display:flex; gap:10px; margin:26px 0 18px; flex-wrap:wrap;}
+  .tab{font-family:inherit; font-size:14px; font-weight:600; padding:10px 22px; border-radius:999px; border:1.5px solid #ddd6c8; background:#fff; color:var(--ink); cursor:pointer; display:flex; align-items:center; gap:8px;}
+  .tab .count{background:var(--cream); border-radius:999px; font-size:12px; padding:2px 9px; color:#6f6a8c; font-weight:600;}
+  .tab.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .tab.active .count{background:var(--red); color:#fff;}
 
-## Updating data next month
-When Garima shares a new Branch Master Sheet, just ask Claude to regenerate
-data.js from the new file and re-upload only data.js. The index.html stays
-the same.
+  .meta{font-size:13px; color:#6f6a8c; margin-bottom:14px;}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:16px;}
+  .card{background:#fff; border:1px solid #e6dfd0; border-radius:14px; padding:18px 20px; display:flex; flex-direction:column; gap:10px;}
+  .card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .card h3{font-size:15.5px; font-weight:600; line-height:1.35;}
+  .chip{background:var(--navy); color:var(--gold); font-size:12px; font-weight:600; border-radius:8px; padding:4px 10px; white-space:nowrap;}
+  .card .addr{font-size:13px; color:#55516e; line-height:1.55;}
+  .tags{display:flex; flex-wrap:wrap; gap:6px;}
+  .tag{font-size:11.5px; background:var(--cream); border-radius:6px; padding:3px 9px; color:#6f6a8c; font-weight:500;}
+  .tag.pin{background:#fdeede; color:#a86a14; font-weight:600;}
+  .copy-btn{margin-top:auto; align-self:flex-start; font-family:inherit; font-size:12.5px; font-weight:600; color:var(--red); background:#fdeaea; border:none; border-radius:8px; padding:8px 14px; cursor:pointer;}
+  .copy-btn:hover{background:#fbdcdc;}
+  .copy-btn.done{background:#e4f4e8; color:#1d7a3a;}
+
+  .empty{text-align:center; padding:70px 20px; color:#6f6a8c; font-size:14.5px;}
+  .empty .pin-icon{font-size:46px; display:block; margin-bottom:14px;}
+  .more{display:block; margin:22px auto 0;}
+  footer{text-align:center; color:#9a95b5; font-size:12px; margin-top:44px;}
+
+  #goTop{position:fixed; bottom:26px; right:26px; z-index:50; width:48px; height:48px; border-radius:50%;
+    background:var(--red); color:#fff; border:none; cursor:pointer; font-size:20px; line-height:1;
+    box-shadow:0 6px 18px rgba(0,0,0,.28); display:none; align-items:center; justify-content:center;
+    transition:background .15s, transform .15s;}
+  #goTop:hover{background:var(--red-dark); transform:translateY(-2px);}
+  #goTop.show{display:flex;}
+
+  #app{display:none;}
+  .gate{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--navy); padding:20px;}
+  .gate-card{background:var(--navy2); border:1px solid var(--line); border-radius:18px; padding:38px 36px; width:100%; max-width:420px; text-align:center;}
+  .gate-logos{display:flex; align-items:center; justify-content:center; gap:14px; margin-bottom:22px;}
+  .gate-logos .logo-chip img{height:40px;}
+  .gate-card h2{color:#fff; font-size:21px; font-weight:700; margin-bottom:6px;}
+  .gate-card h2 em{color:var(--gold); font-style:normal;}
+  .gate-card .sub{color:#b9b5d4; font-size:13px; margin-bottom:22px;}
+  .gate-card input{width:100%; background:#2a2750; border:1.5px solid var(--line); color:#fff; font-family:inherit; font-size:15px; padding:13px 16px; border-radius:12px; outline:none; text-align:center; letter-spacing:2px;}
+  .gate-card input:focus{border-color:var(--gold);}
+  .gate-card .btn{width:100%; margin-top:14px;}
+  .gate-err{color:#ff8d8d; font-size:12.5px; margin-top:12px; min-height:18px;}
+  .gate-note{color:#8e8aa8; font-size:11.5px; margin-top:16px;}
+  @media (max-width:600px){ .hero{padding:26px 22px;} .hero h1{font-size:24px;} .brand-text{display:none;} }
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-logos">
+      <div class="logo-chip"><img src="logo-muthoot.png" alt="Muthoot Finance"></div>
+      <div class="logo-chip"><img src="logo-iccs.png" alt="ICCS"></div>
+    </div>
+    <h2>Branch Locator <em>Login</em></h2>
+    <p class="sub">Enter the team passcode to continue</p>
+    <input id="pass" type="password" placeholder="Passcode" autocomplete="off">
+    <button class="btn btn-red" onclick="unlock()" id="unlockBtn">&#128274; Unlock</button>
+    <div class="gate-err" id="gateErr"></div>
+    <p class="gate-note">For ICCS Muthoot CC advisors. Ask your Team Leader for the passcode.</p>
+  </div>
+</div>
+
+<div id="app">
+<nav class="nav">
+  <div class="brand">
+    <div class="logo-chip"><img src="logo-muthoot.png" alt="Muthoot Finance"></div>
+    <div class="logo-chip"><img src="logo-iccs.png" alt="ICCS"></div>
+    <div class="brand-divider"></div>
+    <div class="brand-text"><b>Muthoot Finance</b><span>BRANCH LOCATOR</span></div>
+  </div>
+  <div class="nav-right"><span class="lock">&#128274;</span><span id="versionBadge"></span></div>
+</nav>
+
+<div class="wrap">
+  <section class="hero">
+    <h1>Find a <em>Muthoot Finance</em> Branch</h1>
+    <p>Search by Pincode (4–6 digits), City Name, Branch or Locality / Area</p>
+    <div class="search-row">
+      <input id="q" type="text" placeholder="Enter Pincode, City, Branch or Locality / Area…" autocomplete="off">
+      <button class="btn btn-red" onclick="runSearch()">&#128269; Search</button>
+      <button class="btn btn-ghost" onclick="clearSearch()">&#10005; Clear</button>
+    </div>
+    <p class="hint">Press <kbd>Enter</kbd> to search &nbsp;&middot;&nbsp; Pincode works from 4 digits &nbsp;&middot;&nbsp; Searches name, address, locality &amp; district</p>
+  </section>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="meta" id="meta"></div>
+  <div class="grid" id="results"></div>
+  <div class="empty" id="empty">
+    <span class="pin-icon">&#128205;</span>
+    Enter a pincode or location above to find nearby Muthoot Finance branches.
+  </div>
+  <button class="btn btn-ghost more" id="moreBtn" style="display:none; color:var(--ink); border-color:#cfc6b2;" onclick="showMore()">Show more results</button>
+  <footer>ICCS &times; Muthoot Finance &middot; Internal tool for contact centre advisors</footer>
+</div>
+<button id="goTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Go to top" aria-label="Go to top">&#8679;</button>
+</div>
+
+<script src="data.enc.js"></script>
+<script>
+let BRANCH_DATA = null;
+const TABS = [
+  {key:'MFL',   label:'MFL Branches'},
+  {key:'MML',   label:'MML Branches'},
+  {key:'SOUTH', label:'South Branches'}
+];
+let activeTab = 'MFL';
+let lastQuery = '';
+let shown = 0;
+const PAGE = 60;
+
+function b64(s){ return Uint8Array.from(atob(s), c=>c.charCodeAt(0)); }
+
+async function tryDecrypt(pass){
+  const enc = new TextEncoder();
+  const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt:b64(ENC_DATA.s), iterations:200000, hash:'SHA-256'},
+    baseKey, {name:'AES-GCM', length:256}, false, ['decrypt']);
+  const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:b64(ENC_DATA.i)}, key, b64(ENC_DATA.c));
+  return JSON.parse(new TextDecoder().decode(plain));
+}
+
+async function unlock(){
+  const pass = document.getElementById('pass').value;
+  const err = document.getElementById('gateErr');
+  const btn = document.getElementById('unlockBtn');
+  if(!pass){ err.textContent='Please enter the passcode.'; return; }
+  btn.disabled = true; btn.innerHTML = 'Checking…'; err.textContent='';
+  try{
+    BRANCH_DATA = await tryDecrypt(pass);
+    sessionStorage.setItem('bl_pass', pass);
+    boot();
+  }catch(e){
+    err.textContent = 'Incorrect passcode. Please check with your Team Leader.';
+    btn.disabled = false; btn.innerHTML = '&#128274; Unlock';
+  }
+}
+
+function boot(){
+  document.getElementById('gate').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('versionBadge').textContent = DATA_VERSION;
+  render();
+}
+
+(async function autoLogin(){
+  const saved = sessionStorage.getItem('bl_pass');
+  if(saved){
+    try{ BRANCH_DATA = await tryDecrypt(saved); boot(); return; }
+    catch(e){ sessionStorage.removeItem('bl_pass'); }
+  }
+  document.getElementById('pass').focus();
+})();
+document.getElementById('pass').addEventListener('keydown', e=>{ if(e.key==='Enter') unlock(); });
+
+function matchBranch(b, q, isPin){
+  if (isPin) return b.pin.startsWith(q);
+  const hay = (b.name+' '+b.addr+' '+b.district+' '+b.state+' '+b.region+' '+b.tc).toLowerCase();
+  return q.split(/\s+/).every(w => hay.includes(w));
+}
+
+function getMatches(tabKey){
+  const q = lastQuery;
+  if (!q) return [];
+  const isPin = /^\d{4,6}$/.test(q);
+  return BRANCH_DATA[tabKey].filter(b => matchBranch(b, q, isPin));
+}
+
+function renderTabs(){
+  const t = document.getElementById('tabs');
+  t.innerHTML = TABS.map(tb => {
+    const n = lastQuery ? getMatches(tb.key).length : BRANCH_DATA[tb.key].length;
+    return `<button class="tab ${tb.key===activeTab?'active':''}" onclick="setTab('${tb.key}')">${tb.label}<span class="count">${n.toLocaleString('en-IN')}</span></button>`;
+  }).join('');
+}
+
+function setTab(k){ activeTab = k; shown = 0; render(); }
+
+function card(b){
+  const head = b.head ? `<span class="tag">&#128100; ${esc(b.head)}</span>` : '';
+  const bc = b.bc ? `<span class="tag">Branch code ${esc(b.bc)}</span>` : '';
+  const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
+  const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
+  const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
+  return `<div class="card">
+    <div class="card-top"><h3>${esc(b.name)}</h3>${tcChip}</div>
+    <div class="addr">${esc(b.addr)}</div>
+    <div class="tags">
+      ${b.pin?`<span class="tag pin">PIN ${esc(b.pin)}</span>`:''}
+      ${b.district?`<span class="tag">${esc(b.district)}</span>`:''}
+      ${b.state?`<span class="tag">${esc(b.state)}</span>`:''}
+      ${b.region?`<span class="tag">Region: ${esc(b.region)}</span>`:''}
+      ${bc}${head}
+    </div>
+    ${copyBtn}
+  </div>`;
+}
+
+function esc(s){ return String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/'/g,'&#39;').replace(/"/g,'&quot;'); }
+
+function copyCode(btn, tc){
+  if(!tc){ return; }
+  navigator.clipboard.writeText(tc).then(()=>{
+    btn.classList.add('done'); btn.innerHTML = '&#10003; Copied ' + tc;
+    setTimeout(()=>{ btn.classList.remove('done'); btn.innerHTML='&#128203; Copy territory code'; }, 1600);
+  });
+}
+
+function render(){
+  renderTabs();
+  const res = document.getElementById('results');
+  const empty = document.getElementById('empty');
+  const meta = document.getElementById('meta');
+  const moreBtn = document.getElementById('moreBtn');
+
+  if (!lastQuery){
+    res.innerHTML=''; meta.textContent='';
+    empty.style.display='block'; moreBtn.style.display='none';
+    return;
+  }
+  const matches = getMatches(activeTab);
+  if (!matches.length){
+    res.innerHTML=''; moreBtn.style.display='none';
+    meta.textContent='';
+    empty.style.display='block';
+    empty.innerHTML = '<span class="pin-icon">&#128269;</span>No branches found in this list for &ldquo;'+esc(lastQuery)+'&rdquo;. Try another tab, fewer digits, or a nearby locality.';
+    return;
+  }
+  empty.style.display='none';
+  if (!shown) shown = Math.min(PAGE, matches.length);
+  meta.textContent = `Showing ${Math.min(shown,matches.length)} of ${matches.length.toLocaleString('en-IN')} matching branch(es) in ${TABS.find(t=>t.key===activeTab).label}`;
+  res.innerHTML = matches.slice(0, shown).map(card).join('');
+  moreBtn.style.display = shown < matches.length ? 'block' : 'none';
+}
+
+function showMore(){ shown += PAGE; render(); }
+
+function runSearch(){
+  lastQuery = document.getElementById('q').value.trim().toLowerCase();
+  activeTab = 'MFL'; // every new search starts on MFL Branches
+  shown = 0;
+  render();
+}
+function clearSearch(){
+  document.getElementById('q').value=''; lastQuery=''; shown=0;
+  document.getElementById('empty').innerHTML = '<span class="pin-icon">&#128205;</span>Enter a pincode or location above to find nearby Muthoot Finance branches.';
+  render();
+}
+document.getElementById('q').addEventListener('keydown', e => { if(e.key==='Enter') runSearch(); });
+
+const goTopBtn = document.getElementById('goTop');
+window.addEventListener('scroll', () => {
+  goTopBtn.classList.toggle('show', window.scrollY > 400);
+}, {passive:true});
+</script>
+</body>
+</html>
