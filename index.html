@@ -86,6 +86,114 @@
     .uber-badge{flex-wrap:wrap; gap:8px;}
   }
 
+  /* ---- ADMIN PANEL ---- */
+  .admin-overlay{position:fixed; inset:0; background:rgba(15,12,30,.78); z-index:100; display:none;
+    align-items:flex-start; justify-content:center; overflow-y:auto; padding:30px 18px;}
+  .admin-overlay.show{display:flex;}
+  .admin-modal{background:var(--cream); border-radius:14px; width:100%; max-width:980px;
+    box-shadow:0 20px 60px rgba(0,0,0,.4); overflow:hidden; max-height:none;}
+  .admin-head{background:var(--navy); color:#fff; padding:16px 22px; display:flex; justify-content:space-between; align-items:center;}
+  .admin-head h2{font-size:17px; font-weight:600; display:flex; align-items:center; gap:10px;}
+  .admin-head h2 .badge{background:var(--red); padding:3px 9px; border-radius:5px; font-size:10px; letter-spacing:1px;}
+  .admin-head .close{background:transparent; color:#fff; border:1px solid #4a4666; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:13px; font-family:inherit;}
+  .admin-head .close:hover{background:rgba(255,255,255,.1);}
+  .admin-body{padding:20px 22px;}
+
+  .admin-section{background:#fff; border:1px solid #d8d2c1; border-radius:10px; padding:16px 18px; margin-bottom:14px;}
+  .admin-section h3{font-size:13px; font-weight:600; color:var(--navy); text-transform:uppercase; letter-spacing:.6px; margin-bottom:10px; display:flex; align-items:center; gap:8px;}
+  .admin-section h3 .dot{display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--muted);}
+  .admin-section h3 .dot.green{background:#21a655;}
+  .admin-section h3 .dot.red{background:var(--red);}
+
+  .admin-gate{padding:30px 22px;}
+  .admin-gate h2{font-size:17px; color:var(--navy); margin-bottom:6px;}
+  .admin-gate p{font-size:13px; color:#6f6a8c; margin-bottom:18px;}
+  .admin-gate-err{color:var(--red); font-size:12.5px; margin-top:10px; min-height:16px;}
+
+  .field{display:flex; flex-direction:column; gap:5px; margin-bottom:10px;}
+  .field label{font-size:11.5px; font-weight:600; color:#4a4664; letter-spacing:.2px;}
+  .field label .req{color:var(--red);}
+  .field input, .field textarea, .field select{
+    font-family:inherit; font-size:13.5px; padding:9px 11px; border:1px solid #d3ccb8;
+    border-radius:6px; background:#fcfaf3; color:var(--ink); transition:border .15s;}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none; border-color:var(--red); background:#fff;}
+  .field textarea{resize:vertical; min-height:60px;}
+  .field .hint{font-size:11px; color:#9a95b5;}
+  .field-row{display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;}
+  .field-row-3{display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;}
+  @media (max-width:600px){
+    .field-row, .field-row-3{grid-template-columns:1fr;}
+  }
+
+  .btn{font-family:inherit; font-size:13px; font-weight:600; padding:9px 16px; border-radius:7px;
+    border:none; cursor:pointer; transition:transform .1s, background .15s;}
+  .btn:hover{transform:translateY(-1px);}
+  .btn:disabled{opacity:.55; cursor:not-allowed; transform:none;}
+  .btn-primary{background:var(--red); color:#fff;}
+  .btn-primary:hover{background:var(--red-dark);}
+  .btn-secondary{background:#fff; color:var(--navy); border:1px solid var(--navy);}
+  .btn-secondary:hover{background:#f0eee5;}
+  .btn-ghost{background:transparent; color:var(--navy); border:1px dashed #b6b0a0; padding:7px 14px; font-size:12.5px;}
+  .btn-danger{background:#fff; color:var(--red); border:1px solid var(--red);}
+  .btn-danger:hover{background:var(--red); color:#fff;}
+  .btn-success{background:#21a655; color:#fff;}
+  .btn-success:hover{background:#1a8044;}
+  .btn-sm{padding:5px 10px; font-size:11.5px;}
+
+  .admin-tabs{display:flex; gap:6px; margin-bottom:14px;}
+  .admin-tab{flex:1; background:#fff; border:1px solid #d8d2c1; color:var(--navy); padding:9px 12px; border-radius:7px; cursor:pointer; font-family:inherit; font-size:12.5px; font-weight:600; transition:all .15s;}
+  .admin-tab.active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .admin-tab .ct{display:inline-block; margin-left:6px; background:rgba(255,255,255,.18); padding:1px 7px; border-radius:9px; font-size:10.5px;}
+  .admin-tab:not(.active) .ct{background:#f0ebd9; color:#6f6a8c;}
+
+  .admin-search{display:flex; gap:8px; margin-bottom:10px;}
+  .admin-search input{flex:1; font-family:inherit; font-size:13px; padding:8px 12px; border:1px solid #d3ccb8; border-radius:7px; background:#fcfaf3;}
+  .admin-search input:focus{outline:none; border-color:var(--red);}
+
+  .branch-list{max-height:360px; overflow-y:auto; border:1px solid #e0dac6; border-radius:8px; background:#fcfaf3;}
+  .branch-row{display:grid; grid-template-columns:1fr auto; gap:10px; padding:10px 14px; border-bottom:1px solid #ece6d2; align-items:center;}
+  .branch-row:last-child{border-bottom:none;}
+  .branch-row:hover{background:#fff;}
+  .branch-row.pending-add{background:#e8f5e9;}
+  .branch-row.pending-edit{background:#fff8e1;}
+  .branch-row.pending-delete{background:#fdecea; text-decoration:line-through; opacity:.7;}
+  .branch-row .info{font-size:13px; color:var(--ink);}
+  .branch-row .info b{color:var(--navy); font-weight:600;}
+  .branch-row .info .meta{font-size:11px; color:#6f6a8c; margin-top:2px;}
+  .branch-row .actions{display:flex; gap:5px; flex-shrink:0;}
+  .branch-row .actions button{padding:5px 9px; font-size:11px; font-family:inherit; border:none; border-radius:5px; cursor:pointer; font-weight:600;}
+  .branch-row .edit-btn{background:#e8f0fe; color:#1a4ea6;}
+  .branch-row .edit-btn:hover{background:#d0e0fc;}
+  .branch-row .del-btn{background:#fdecea; color:var(--red);}
+  .branch-row .del-btn:hover{background:var(--red); color:#fff;}
+  .branch-row .undo-btn{background:#fff3cd; color:#7a5a00;}
+
+  .pending-bar{display:flex; align-items:center; gap:14px; flex-wrap:wrap; background:#fff8e1; border:1px solid #f0d56b; border-left:4px solid var(--gold); border-radius:7px; padding:11px 14px; margin-bottom:14px;}
+  .pending-bar .summary{font-size:13px; color:#5a4400; font-weight:600;}
+  .pending-bar .pill{display:inline-block; background:#fff; padding:2px 9px; border-radius:5px; font-size:11.5px; margin-right:5px; font-weight:600;}
+  .pending-bar .pill.add{color:#21a655; border:1px solid #c5e8d1;}
+  .pending-bar .pill.edit{color:#b07000; border:1px solid #f0d56b;}
+  .pending-bar .pill.del{color:var(--red); border:1px solid #f5c6c0;}
+
+  .upload-zone{border:2px dashed #c8c0a8; border-radius:8px; padding:24px; text-align:center; background:#fcfaf3; cursor:pointer; transition:all .15s;}
+  .upload-zone:hover{border-color:var(--red); background:#fff;}
+  .upload-zone .icon{font-size:32px; opacity:.5;}
+  .upload-zone p{font-size:13px; color:#4a4664; margin:8px 0 4px;}
+  .upload-zone p.sub{font-size:11.5px; color:#8e8aa8;}
+  .upload-zone input[type=file]{display:none;}
+
+  .status{padding:11px 14px; border-radius:7px; font-size:13px; margin-top:12px; display:none;}
+  .status.success{background:#d4edda; color:#155724; border:1px solid #c3e6cb; display:block;}
+  .status.error{background:#f8d7da; color:#721c24; border:1px solid #f5c6cb; display:block;}
+  .status.info{background:#cce5ff; color:#004085; border:1px solid #b8daff; display:block;}
+
+  .modal-overlay{position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; display:none; align-items:center; justify-content:center; padding:20px;}
+  .modal-overlay.show{display:flex;}
+  .modal-box{background:#fff; border-radius:12px; max-width:560px; width:100%; max-height:88vh; overflow-y:auto;}
+  .modal-box .mb-head{background:var(--navy); color:#fff; padding:14px 18px; font-size:14px; font-weight:600;}
+  .modal-box .mb-body{padding:18px;}
+  .modal-box .mb-actions{display:flex; gap:8px; justify-content:flex-end; padding:0 18px 18px;}
+
   #app{display:none;}
   .gate{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--navy); padding:20px;}
   .gate-card{background:var(--navy2); border:1px solid var(--line); border-radius:18px; padding:38px 36px; width:100%; max-width:420px; text-align:center;}
@@ -153,6 +261,151 @@
   <footer>ICCS &times; Muthoot Finance &middot; Internal tool for contact centre advisors</footer>
 </div>
 <button id="goTop" onclick="window.scrollTo({top:0, behavior:'smooth'})" title="Go to top" aria-label="Go to top">&#8679;</button>
+
+<!-- ADMIN PANEL -->
+<div class="admin-overlay" id="adminOverlay">
+  <div class="admin-modal">
+    <div class="admin-head">
+      <h2>&#9881; Admin Panel <span class="badge">MUTHOOT &times; ICCS</span></h2>
+      <button class="close" onclick="adminClose()">&times; Close (Esc)</button>
+    </div>
+
+    <!-- Auth view -->
+    <div id="adminGate" class="admin-gate" style="display:block;">
+      <h2>Enter admin password</h2>
+      <p>This panel is restricted to L&amp;D Manager. Press Esc to cancel.</p>
+      <div class="field">
+        <label>Admin password</label>
+        <input type="password" id="adminPass" placeholder="Enter password" autocomplete="off">
+      </div>
+      <button class="btn btn-primary" id="adminUnlockBtn" onclick="adminAuth()">Unlock</button>
+      <div class="admin-gate-err" id="adminGateErr"></div>
+    </div>
+
+    <!-- Main admin view -->
+    <div id="adminMain" class="admin-body" style="display:none;">
+
+      <!-- 1) GitHub token -->
+      <div class="admin-section">
+        <h3><span class="dot" id="tokenDot"></span> GitHub Connection</h3>
+        <div class="field-row">
+          <div class="field">
+            <label>Personal access token <span class="req">*</span></label>
+            <input type="password" id="ghToken" placeholder="github_pat_xxxxxxxx" autocomplete="off">
+            <span class="hint">Fine-grained token, repo scope: muthootnoida/branch-locator, Contents: Read &amp; write</span>
+          </div>
+          <div class="field">
+            <label>&nbsp;</label>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn-secondary btn-sm" onclick="testToken()">Test connection</button>
+              <button class="btn btn-ghost btn-sm" onclick="clearToken()">Clear</button>
+            </div>
+            <label style="margin-top:8px; display:flex; align-items:center; gap:6px; font-weight:500;">
+              <input type="checkbox" id="rememberToken"> Remember token on this device for 24 hours
+            </label>
+          </div>
+        </div>
+        <div id="tokenStatus" class="status"></div>
+      </div>
+
+      <!-- 2) Branch management -->
+      <div class="admin-section">
+        <h3><span class="dot"></span> Manage Branches</h3>
+        <div class="admin-tabs" id="adminTabs"></div>
+        <div class="admin-search">
+          <input type="text" id="adminSearch" placeholder="Search by branch name, TC, district, pincode...">
+          <button class="btn btn-primary btn-sm" onclick="openAddForm()">+ Add New Branch</button>
+          <button class="btn btn-secondary btn-sm" onclick="openBulkUpload()">&#128229; Bulk Upload</button>
+        </div>
+        <div class="branch-list" id="adminBranchList"></div>
+        <div style="font-size:11px; color:#8e8aa8; margin-top:6px;" id="adminListMeta"></div>
+      </div>
+
+      <!-- 3) Pending changes + commit -->
+      <div class="admin-section">
+        <h3><span class="dot" id="pendingDot"></span> Pending Changes</h3>
+        <div class="pending-bar" id="pendingBar" style="display:none;"></div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn btn-success" id="commitBtn" onclick="commitChanges()" disabled>&#128640; Commit to GitHub &amp; Publish</button>
+          <button class="btn btn-danger" id="discardBtn" onclick="discardChanges()" disabled>Discard all changes</button>
+          <button class="btn btn-ghost" onclick="downloadBackup()">&#11015; Download current data as backup</button>
+        </div>
+        <div id="commitStatus" class="status"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Add / Edit branch modal -->
+<div class="modal-overlay" id="branchFormOverlay">
+  <div class="modal-box">
+    <div class="mb-head" id="branchFormTitle">Add new branch</div>
+    <div class="mb-body">
+      <div class="field"><label>Branch Name <span class="req">*</span></label><input id="bfName" type="text"></div>
+      <div class="field-row">
+        <div class="field"><label>Territory Code (TC) <span class="req" id="tcReq">*</span></label><input id="bfTc" type="text"></div>
+        <div class="field" id="bcWrap" style="display:none;"><label>Branch Code (BC)</label><input id="bfBc" type="text"></div>
+      </div>
+      <div class="field"><label>Address</label><textarea id="bfAddr"></textarea></div>
+      <div class="field-row-3">
+        <div class="field"><label>Pincode</label><input id="bfPin" type="text"></div>
+        <div class="field"><label>District</label><input id="bfDistrict" type="text"></div>
+        <div class="field"><label>State</label><input id="bfState" type="text"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Region</label><input id="bfRegion" type="text"></div>
+        <div class="field" id="headWrap"><label>Branch Head</label><input id="bfHead" type="text"></div>
+      </div>
+      <div id="bfErr" style="color:var(--red); font-size:12.5px; min-height:18px;"></div>
+    </div>
+    <div class="mb-actions">
+      <button class="btn btn-secondary" onclick="closeBranchForm()">Cancel</button>
+      <button class="btn btn-primary" id="bfSaveBtn" onclick="saveBranchForm()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk upload modal -->
+<div class="modal-overlay" id="bulkOverlay">
+  <div class="modal-box">
+    <div class="mb-head">Bulk upload branches</div>
+    <div class="mb-body">
+      <p style="font-size:13px; color:#4a4664; margin-bottom:10px;">Upload a CSV file with columns: <b>name, tc, addr, pin, district, state, region, head, bc</b>. Branch Name and TC are required. <a href="#" onclick="downloadCsvTemplate(event)" style="color:var(--red);">Download CSV template</a></p>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+        <div class="icon">&#128229;</div>
+        <p><b>Click here or drag a CSV file</b></p>
+        <p class="sub">Up to 500 rows per upload</p>
+        <input type="file" id="csvFile" accept=".csv">
+      </div>
+      <div id="bulkPreview" style="margin-top:12px;"></div>
+    </div>
+    <div class="mb-actions">
+      <button class="btn btn-secondary" onclick="closeBulkUpload()">Cancel</button>
+      <button class="btn btn-primary" id="bulkAddBtn" onclick="confirmBulkAdd()" disabled>Add all to pending</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirm commit modal -->
+<div class="modal-overlay" id="commitOverlay">
+  <div class="modal-box">
+    <div class="mb-head">Confirm publish to live site</div>
+    <div class="mb-body">
+      <div id="commitSummary" style="font-size:13.5px; color:#4a4664; line-height:1.6;"></div>
+      <div class="field" style="margin-top:14px;">
+        <label>Commit message (optional)</label>
+        <input id="commitMsg" type="text" placeholder="e.g. Added 5 branches in Faridabad">
+      </div>
+      <p style="font-size:12px; color:#8e8aa8; margin-top:6px;">This will publish the changes to the live site. All advisors will see them after ~1 minute (and a hard refresh).</p>
+    </div>
+    <div class="mb-actions">
+      <button class="btn btn-secondary" onclick="closeCommitConfirm()">Cancel</button>
+      <button class="btn btn-success" id="confirmCommitBtn" onclick="doCommit()">&#128640; Publish now</button>
+    </div>
+  </div>
+</div>
+
 </div>
 
 <script src="data.enc.js"></script>
@@ -336,6 +589,552 @@ const goTopBtn = document.getElementById('goTop');
 window.addEventListener('scroll', () => {
   goTopBtn.classList.toggle('show', window.scrollY > 400);
 }, {passive:true});
+
+/* =====================================================================
+   ADMIN PANEL  (Ctrl+Shift+A to open)
+   ===================================================================== */
+const ADMIN_HASH = '8824ce829e99e5219977b9410b8d82f13267b958b4aeefd150ff88b8ff560d16';
+const GH_REPO = 'muthootnoida/branch-locator';
+const GH_FILE = 'data.enc.js';
+
+let adminAuthed = false;
+let adminTab = 'MFL';
+let adminSearchQ = '';
+let pendingChanges = []; // {op:'add'|'edit'|'delete', tab, before?, after?, id}
+let editingId = null;
+let nextLocalId = 1;
+let bulkParsedRows = null;
+
+function uuid(){ return 'p_' + (Date.now().toString(36)) + '_' + (nextLocalId++); }
+
+async function sha256Hex(s){
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ---- Keyboard shortcut + Esc + URL hash fallback ----
+document.addEventListener('keydown', e => {
+  // Ctrl+Alt+A (or Cmd+Alt+A on Mac) — no browser conflict
+  if((e.ctrlKey || e.metaKey) && e.altKey && (e.key==='A' || e.key==='a')){
+    e.preventDefault();
+    if(!BRANCH_DATA){ alert('Please unlock the tool with the advisor passcode first.'); return; }
+    adminOpen();
+  }
+  if(e.key==='Escape'){
+    if(document.getElementById('branchFormOverlay').classList.contains('show')){ closeBranchForm(); return; }
+    if(document.getElementById('bulkOverlay').classList.contains('show')){ closeBulkUpload(); return; }
+    if(document.getElementById('commitOverlay').classList.contains('show')){ closeCommitConfirm(); return; }
+    if(document.getElementById('adminOverlay').classList.contains('show')){ adminClose(); return; }
+  }
+});
+
+// URL hash fallback: append #admin to the URL to open the panel
+function checkAdminHash(){
+  if(location.hash === '#admin' && BRANCH_DATA){
+    adminOpen();
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+}
+window.addEventListener('hashchange', checkAdminHash);
+// Also check after autologin completes
+const _origBoot = boot;
+boot = function(){ _origBoot(); setTimeout(checkAdminHash, 100); };
+
+function adminOpen(){
+  document.getElementById('adminOverlay').classList.add('show');
+  if(adminAuthed){ showAdminMain(); } else {
+    document.getElementById('adminGate').style.display='block';
+    document.getElementById('adminMain').style.display='none';
+    document.getElementById('adminPass').value='';
+    document.getElementById('adminGateErr').textContent='';
+    setTimeout(()=>document.getElementById('adminPass').focus(), 80);
+  }
+}
+function adminClose(){ document.getElementById('adminOverlay').classList.remove('show'); }
+
+document.getElementById('adminPass').addEventListener('keydown', e=>{ if(e.key==='Enter') adminAuth(); });
+
+async function adminAuth(){
+  const pass = document.getElementById('adminPass').value;
+  const btn = document.getElementById('adminUnlockBtn');
+  const err = document.getElementById('adminGateErr');
+  if(!pass){ err.textContent='Please enter the password.'; return; }
+  btn.disabled = true; btn.textContent='Checking…';
+  try{
+    const h = await sha256Hex(pass);
+    if(h !== ADMIN_HASH){
+      err.textContent = 'Incorrect admin password.';
+      btn.disabled = false; btn.textContent='Unlock';
+      return;
+    }
+    adminAuthed = true;
+    showAdminMain();
+  }catch(e){
+    err.textContent = 'Error: ' + e.message;
+    btn.disabled = false; btn.textContent='Unlock';
+  }
+}
+
+function showAdminMain(){
+  document.getElementById('adminGate').style.display='none';
+  document.getElementById('adminMain').style.display='block';
+  loadStoredToken();
+  renderAdminTabs();
+  renderAdminList();
+  renderPending();
+}
+
+// ---- Token handling ----
+function loadStoredToken(){
+  const tok = sessionStorage.getItem('bl_gh_tok') || readPersistedToken();
+  if(tok){
+    document.getElementById('ghToken').value = tok;
+    document.getElementById('rememberToken').checked = !!localStorage.getItem('bl_gh_tok_exp');
+  }
+}
+function readPersistedToken(){
+  const exp = localStorage.getItem('bl_gh_tok_exp');
+  if(!exp) return '';
+  if(Date.now() > parseInt(exp,10)){
+    localStorage.removeItem('bl_gh_tok'); localStorage.removeItem('bl_gh_tok_exp'); return '';
+  }
+  return localStorage.getItem('bl_gh_tok') || '';
+}
+function saveToken(tok){
+  sessionStorage.setItem('bl_gh_tok', tok);
+  if(document.getElementById('rememberToken').checked){
+    localStorage.setItem('bl_gh_tok', tok);
+    localStorage.setItem('bl_gh_tok_exp', String(Date.now() + 24*60*60*1000));
+  } else {
+    localStorage.removeItem('bl_gh_tok'); localStorage.removeItem('bl_gh_tok_exp');
+  }
+}
+function clearToken(){
+  document.getElementById('ghToken').value='';
+  sessionStorage.removeItem('bl_gh_tok');
+  localStorage.removeItem('bl_gh_tok'); localStorage.removeItem('bl_gh_tok_exp');
+  document.getElementById('tokenDot').classList.remove('green','red');
+  showStatus('tokenStatus', 'Token cleared.', 'info');
+}
+async function testToken(){
+  const tok = document.getElementById('ghToken').value.trim();
+  if(!tok){ showStatus('tokenStatus','Paste a token first.','error'); return; }
+  showStatus('tokenStatus','Testing connection…','info');
+  try{
+    const res = await fetch(`https://api.github.com/repos/${GH_REPO}`, {
+      headers: { 'Authorization': 'Bearer '+tok, 'Accept':'application/vnd.github+json' }
+    });
+    if(!res.ok){
+      const t = await res.text();
+      document.getElementById('tokenDot').classList.remove('green'); document.getElementById('tokenDot').classList.add('red');
+      showStatus('tokenStatus', `Connection failed (${res.status}). Token may be wrong, expired, or missing repo access. ${t.slice(0,150)}`, 'error');
+      return;
+    }
+    saveToken(tok);
+    document.getElementById('tokenDot').classList.remove('red'); document.getElementById('tokenDot').classList.add('green');
+    showStatus('tokenStatus', '&#10003; Connected to '+GH_REPO+'. Ready to publish changes.', 'success');
+  }catch(e){
+    showStatus('tokenStatus', 'Network error: '+e.message, 'error');
+  }
+}
+
+function showStatus(id, html, type){
+  const el = document.getElementById(id);
+  el.className = 'status ' + type;
+  el.innerHTML = html;
+}
+
+// ---- Admin tab/list rendering ----
+function renderAdminTabs(){
+  document.getElementById('adminTabs').innerHTML = TABS.map(t => {
+    const n = effectiveBranches(t.key).length;
+    return `<button class="admin-tab ${t.key===adminTab?'active':''}" onclick="setAdminTab('${t.key}')">${t.label}<span class="ct">${n.toLocaleString('en-IN')}</span></button>`;
+  }).join('');
+}
+function setAdminTab(k){ adminTab = k; adminSearchQ=''; document.getElementById('adminSearch').value=''; renderAdminTabs(); renderAdminList(); }
+
+document.getElementById('adminSearch').addEventListener('input', e=>{
+  adminSearchQ = e.target.value.toLowerCase().trim();
+  renderAdminList();
+});
+
+// Returns merged view: base + pending adds, minus deletes, with edits applied.
+// Each entry annotated: _id, _op ('add'|'edit'|'delete'|null), _origIdx
+function effectiveBranches(tab){
+  const base = BRANCH_DATA[tab].map((b, idx) => ({...b, _id:'b_'+tab+'_'+idx, _origIdx:idx, _op:null}));
+  // Apply edits & deletes
+  for(const ch of pendingChanges){
+    if(ch.tab !== tab) continue;
+    if(ch.op === 'edit'){
+      const t = base.find(x => x._id === ch.id);
+      if(t){ Object.assign(t, ch.after); t._op='edit'; }
+    } else if(ch.op === 'delete'){
+      const t = base.find(x => x._id === ch.id);
+      if(t){ t._op='delete'; }
+    }
+  }
+  // Append adds
+  for(const ch of pendingChanges){
+    if(ch.tab !== tab || ch.op !== 'add') continue;
+    base.push({...ch.after, _id:ch.id, _origIdx:-1, _op:'add'});
+  }
+  return base;
+}
+
+function renderAdminList(){
+  const list = effectiveBranches(adminTab);
+  const q = adminSearchQ;
+  const filtered = q ? list.filter(b => (b.name+' '+b.tc+' '+b.district+' '+b.pin+' '+b.addr).toLowerCase().includes(q)) : list;
+  const slice = filtered.slice(0, 200);
+  const html = slice.map(b => {
+    const cls = b._op ? 'pending-'+b._op : '';
+    const undo = b._op ? `<button class="undo-btn" onclick="undoChange('${b._id}')">Undo</button>` : '';
+    const editDel = b._op==='delete' ? '' : `
+      <button class="edit-btn" onclick="openEditForm('${b._id}')">Edit</button>
+      <button class="del-btn" onclick="deleteBranch('${b._id}')">Delete</button>`;
+    return `<div class="branch-row ${cls}">
+      <div class="info">
+        <b>${esc(b.name||'(unnamed)')}</b>${b.tc?` &middot; TC ${esc(b.tc)}`:''}
+        <div class="meta">${esc(b.addr||'')}${b.pin?` &middot; PIN ${esc(b.pin)}`:''}${b.district?` &middot; ${esc(b.district)}`:''}${b.state?', '+esc(b.state):''}</div>
+      </div>
+      <div class="actions">${undo}${editDel}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('adminBranchList').innerHTML = html || '<div style="padding:20px; text-align:center; color:#8e8aa8;">No branches match this search.</div>';
+  document.getElementById('adminListMeta').textContent =
+    `Showing ${slice.length} of ${filtered.length.toLocaleString('en-IN')} branch(es)${q?' matching "'+q+'"':''} in ${adminTab}. Use the search to narrow down.`;
+}
+
+// ---- Add / Edit form ----
+function openAddForm(){
+  editingId = null;
+  document.getElementById('branchFormTitle').textContent = 'Add new branch — ' + adminTab;
+  document.getElementById('bfName').value='';
+  document.getElementById('bfTc').value='';
+  document.getElementById('bfAddr').value='';
+  document.getElementById('bfPin').value='';
+  document.getElementById('bfDistrict').value='';
+  document.getElementById('bfState').value='';
+  document.getElementById('bfRegion').value='';
+  document.getElementById('bfHead').value='';
+  document.getElementById('bfBc').value='';
+  document.getElementById('bfErr').textContent='';
+  document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
+  document.getElementById('headWrap').style.display = adminTab==='SOUTH' ? 'none' : 'flex';
+  document.getElementById('branchFormOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('bfName').focus(), 60);
+}
+function openEditForm(id){
+  const list = effectiveBranches(adminTab);
+  const b = list.find(x => x._id === id);
+  if(!b) return;
+  editingId = id;
+  document.getElementById('branchFormTitle').textContent = 'Edit branch — ' + (b.name || '');
+  document.getElementById('bfName').value = b.name||'';
+  document.getElementById('bfTc').value = b.tc||'';
+  document.getElementById('bfAddr').value = b.addr||'';
+  document.getElementById('bfPin').value = b.pin||'';
+  document.getElementById('bfDistrict').value = b.district||'';
+  document.getElementById('bfState').value = b.state||'';
+  document.getElementById('bfRegion').value = b.region||'';
+  document.getElementById('bfHead').value = b.head||'';
+  document.getElementById('bfBc').value = b.bc||'';
+  document.getElementById('bfErr').textContent='';
+  document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
+  document.getElementById('headWrap').style.display = adminTab==='SOUTH' ? 'none' : 'flex';
+  document.getElementById('branchFormOverlay').classList.add('show');
+  setTimeout(()=>document.getElementById('bfName').focus(), 60);
+}
+function closeBranchForm(){ document.getElementById('branchFormOverlay').classList.remove('show'); }
+
+function readFormBranch(){
+  const b = {
+    name: document.getElementById('bfName').value.trim(),
+    tc: document.getElementById('bfTc').value.trim(),
+    addr: document.getElementById('bfAddr').value.trim(),
+    pin: document.getElementById('bfPin').value.trim(),
+    district: document.getElementById('bfDistrict').value.trim(),
+    state: document.getElementById('bfState').value.trim(),
+    region: document.getElementById('bfRegion').value.trim(),
+  };
+  if(adminTab === 'SOUTH'){ b.bc = document.getElementById('bfBc').value.trim(); }
+  else { b.head = document.getElementById('bfHead').value.trim(); }
+  return b;
+}
+function saveBranchForm(){
+  const b = readFormBranch();
+  if(!b.name){ document.getElementById('bfErr').textContent = 'Branch name is required.'; return; }
+  if(!b.tc){ document.getElementById('bfErr').textContent = 'Territory Code is required.'; return; }
+  if(editingId){
+    // edit: if it's an "add" pending, edit that add. Otherwise create/update an 'edit' change.
+    const addCh = pendingChanges.find(c => c.op==='add' && c.id===editingId);
+    if(addCh){ addCh.after = b; }
+    else {
+      const existing = pendingChanges.find(c => c.op==='edit' && c.id===editingId);
+      if(existing){ existing.after = b; }
+      else { pendingChanges.push({op:'edit', tab:adminTab, id:editingId, after:b}); }
+    }
+  } else {
+    pendingChanges.push({op:'add', tab:adminTab, id:uuid(), after:b});
+  }
+  closeBranchForm();
+  renderAdminTabs(); renderAdminList(); renderPending();
+}
+function deleteBranch(id){
+  if(!confirm('Mark this branch for deletion? You can undo before committing.')) return;
+  // If it's a pending add, simply remove the add
+  const addIdx = pendingChanges.findIndex(c => c.op==='add' && c.id===id);
+  if(addIdx >= 0){ pendingChanges.splice(addIdx, 1); }
+  else {
+    // Remove any pending edit, push a delete
+    const editIdx = pendingChanges.findIndex(c => c.op==='edit' && c.id===id);
+    if(editIdx >= 0) pendingChanges.splice(editIdx, 1);
+    pendingChanges.push({op:'delete', tab:adminTab, id});
+  }
+  renderAdminTabs(); renderAdminList(); renderPending();
+}
+function undoChange(id){
+  pendingChanges = pendingChanges.filter(c => c.id !== id);
+  renderAdminTabs(); renderAdminList(); renderPending();
+}
+
+function renderPending(){
+  const adds = pendingChanges.filter(c => c.op==='add').length;
+  const edits = pendingChanges.filter(c => c.op==='edit').length;
+  const dels = pendingChanges.filter(c => c.op==='delete').length;
+  const total = adds + edits + dels;
+  const bar = document.getElementById('pendingBar');
+  if(total === 0){
+    bar.style.display='none';
+    document.getElementById('commitBtn').disabled = true;
+    document.getElementById('discardBtn').disabled = true;
+    document.getElementById('pendingDot').classList.remove('green','red');
+  } else {
+    bar.style.display='flex';
+    bar.innerHTML = `<span class="summary">${total} pending change(s):</span>
+      <span class="pill add">+ ${adds} added</span>
+      <span class="pill edit">${edits} edited</span>
+      <span class="pill del">${dels} deleted</span>
+      <span style="font-size:11px; color:#5a4400;">Click "Commit" to publish.</span>`;
+    document.getElementById('commitBtn').disabled = false;
+    document.getElementById('discardBtn').disabled = false;
+    document.getElementById('pendingDot').classList.add('green');
+  }
+}
+function discardChanges(){
+  if(!confirm('Discard all pending changes? This cannot be undone.')) return;
+  pendingChanges = [];
+  renderAdminTabs(); renderAdminList(); renderPending();
+}
+
+// ---- Bulk CSV upload ----
+function openBulkUpload(){
+  document.getElementById('bulkOverlay').classList.add('show');
+  document.getElementById('bulkPreview').innerHTML='';
+  document.getElementById('csvFile').value='';
+  document.getElementById('bulkAddBtn').disabled = true;
+  bulkParsedRows = null;
+}
+function closeBulkUpload(){ document.getElementById('bulkOverlay').classList.remove('show'); }
+
+function downloadCsvTemplate(e){
+  e.preventDefault();
+  const fields = ['name','tc','addr','pin','district','state','region','head','bc'];
+  const csv = fields.join(',') + '\n' +
+    `"EXAMPLE-BRANCH NAME","9999","Sample address","110001","CENTRAL DELHI","DELHI","Delhi NCR","HEAD NAME",""`;
+  const blob = new Blob([csv], {type:'text/csv'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'branch-upload-template.csv';
+  a.click();
+}
+
+document.getElementById('csvFile').addEventListener('change', async e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const txt = await f.text();
+  try{
+    const rows = parseCSV(txt);
+    if(!rows.length){ throw new Error('Empty CSV.'); }
+    const headers = rows[0].map(h => h.toLowerCase().trim());
+    const data = rows.slice(1).filter(r => r.some(c => c.trim()));
+    bulkParsedRows = data.map(r => {
+      const o = {};
+      headers.forEach((h,i)=>{ o[h] = (r[i]||'').trim(); });
+      return o;
+    });
+    const valid = bulkParsedRows.filter(r => r.name && r.tc);
+    const invalid = bulkParsedRows.length - valid.length;
+    document.getElementById('bulkPreview').innerHTML = `
+      <div class="status info" style="display:block;">
+        Parsed ${bulkParsedRows.length} row(s). <b>${valid.length} valid</b> (name + TC present).${invalid?` <span style="color:var(--red);">${invalid} rows skipped — missing name or TC.</span>`:''}
+        <br>Preview (first 3): <code style="font-size:11px;">${esc(JSON.stringify(valid.slice(0,3)))}</code>
+      </div>`;
+    bulkParsedRows = valid;
+    document.getElementById('bulkAddBtn').disabled = valid.length === 0;
+  }catch(err){
+    document.getElementById('bulkPreview').innerHTML = `<div class="status error" style="display:block;">CSV parse error: ${esc(err.message)}</div>`;
+    document.getElementById('bulkAddBtn').disabled = true;
+  }
+});
+
+function parseCSV(text){
+  const rows = []; let row = []; let cell = ''; let inQ = false;
+  for(let i=0;i<text.length;i++){
+    const c = text[i];
+    if(inQ){
+      if(c === '"' && text[i+1] === '"'){ cell += '"'; i++; }
+      else if(c === '"'){ inQ = false; }
+      else cell += c;
+    } else {
+      if(c === '"'){ inQ = true; }
+      else if(c === ','){ row.push(cell); cell=''; }
+      else if(c === '\n'){ row.push(cell); rows.push(row); row=[]; cell=''; }
+      else if(c === '\r'){ /* skip */ }
+      else cell += c;
+    }
+  }
+  if(cell || row.length){ row.push(cell); rows.push(row); }
+  return rows;
+}
+
+function confirmBulkAdd(){
+  if(!bulkParsedRows || !bulkParsedRows.length) return;
+  for(const r of bulkParsedRows){
+    const b = {name:r.name, tc:r.tc, addr:r.addr||'', pin:r.pin||'', district:r.district||'', state:r.state||'', region:r.region||''};
+    if(adminTab === 'SOUTH') b.bc = r.bc || ''; else b.head = r.head || '';
+    pendingChanges.push({op:'add', tab:adminTab, id:uuid(), after:b});
+  }
+  closeBulkUpload();
+  renderAdminTabs(); renderAdminList(); renderPending();
+}
+
+// ---- Apply pending changes to BRANCH_DATA shape ----
+function buildUpdatedData(){
+  const out = {MFL:[], MML:[], SOUTH:[]};
+  for(const tab of ['MFL','MML','SOUTH']){
+    const list = effectiveBranches(tab);
+    for(const b of list){
+      if(b._op === 'delete') continue;
+      const c = {...b}; delete c._id; delete c._op; delete c._origIdx;
+      out[tab].push(c);
+    }
+  }
+  return out;
+}
+
+// ---- Re-encryption ----
+async function reEncrypt(jsonData, passcode){
+  const enc = new TextEncoder();
+  const plain = enc.encode(JSON.stringify(jsonData));
+  const salt = crypto.getRandomValues(new Uint8Array(16));
+  const iv   = crypto.getRandomValues(new Uint8Array(12));
+  const baseKey = await crypto.subtle.importKey('raw', enc.encode(passcode), 'PBKDF2', false, ['deriveKey']);
+  const key = await crypto.subtle.deriveKey(
+    {name:'PBKDF2', salt, iterations:200000, hash:'SHA-256'},
+    baseKey, {name:'AES-GCM', length:256}, false, ['encrypt']);
+  const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, plain);
+  // Chunked base64 (large arrays blow the stack with String.fromCharCode(...arr))
+  const tob64 = (arr) => {
+    const u8 = new Uint8Array(arr);
+    let bin = ''; const CHUNK = 8192;
+    for(let i = 0; i < u8.length; i += CHUNK){
+      bin += String.fromCharCode.apply(null, u8.subarray(i, i + CHUNK));
+    }
+    return btoa(bin);
+  };
+  return { s: tob64(salt), i: tob64(iv), c: tob64(ct) };
+}
+
+function buildDataFileContent(encObj, version){
+  return `const ENC_DATA = ${JSON.stringify(encObj)};\nconst DATA_VERSION = ${JSON.stringify(version)};\n`;
+}
+
+// ---- Commit flow ----
+function commitChanges(){
+  const adds = pendingChanges.filter(c=>c.op==='add').length;
+  const edits = pendingChanges.filter(c=>c.op==='edit').length;
+  const dels = pendingChanges.filter(c=>c.op==='delete').length;
+  document.getElementById('commitSummary').innerHTML = `
+    You're about to publish:<br>
+    &middot; <b>${adds}</b> new branch(es) added<br>
+    &middot; <b>${edits}</b> branch(es) edited<br>
+    &middot; <b>${dels}</b> branch(es) deleted<br><br>
+    Across tabs: ${[...new Set(pendingChanges.map(c=>c.tab))].join(', ')}.`;
+  const today = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+  document.getElementById('commitMsg').value = `Branch update — ${adds} add, ${edits} edit, ${dels} delete (${today})`;
+  document.getElementById('commitOverlay').classList.add('show');
+}
+function closeCommitConfirm(){ document.getElementById('commitOverlay').classList.remove('show'); }
+
+async function doCommit(){
+  const tok = document.getElementById('ghToken').value.trim();
+  if(!tok){ showStatus('commitStatus','Paste a GitHub token first.','error'); closeCommitConfirm(); return; }
+  const passcode = sessionStorage.getItem('bl_pass');
+  if(!passcode){ showStatus('commitStatus','Lost advisor passcode in this session. Refresh and re-unlock.','error'); closeCommitConfirm(); return; }
+
+  const btn = document.getElementById('confirmCommitBtn');
+  btn.disabled = true; btn.textContent = 'Publishing…';
+
+  try{
+    // 1. Build updated data
+    const updated = buildUpdatedData();
+    // 2. Re-encrypt
+    const encObj = await reEncrypt(updated, passcode);
+    const today = new Date().toLocaleDateString('en-GB', {day:'2-digit', month:'short', year:'numeric'});
+    const newVersion = `Branch Master ${today}`;
+    const fileContent = buildDataFileContent(encObj, newVersion);
+
+    // 3. Get current SHA
+    const url = `https://api.github.com/repos/${GH_REPO}/contents/${GH_FILE}`;
+    const meta = await fetch(url, { headers: {'Authorization':'Bearer '+tok, 'Accept':'application/vnd.github+json'} });
+    if(!meta.ok) throw new Error('Cannot read current data.enc.js from GitHub: HTTP '+meta.status);
+    const metaJ = await meta.json();
+
+    // 4. PUT new content
+    const contentB64 = btoa(unescape(encodeURIComponent(fileContent)));
+    const commitMsg = document.getElementById('commitMsg').value.trim() || 'Admin panel: update branch data';
+    const putRes = await fetch(url, {
+      method:'PUT',
+      headers:{'Authorization':'Bearer '+tok, 'Accept':'application/vnd.github+json', 'Content-Type':'application/json'},
+      body: JSON.stringify({ message: commitMsg, content: contentB64, sha: metaJ.sha })
+    });
+    if(!putRes.ok){
+      const t = await putRes.text();
+      throw new Error('GitHub commit failed (HTTP '+putRes.status+'): '+t.slice(0,200));
+    }
+    const result = await putRes.json();
+
+    // 5. Update in-memory data + version, clear pending, refresh UI
+    BRANCH_DATA = updated;
+    document.getElementById('versionBadge').textContent = newVersion + ' (pending live refresh)';
+    pendingChanges = [];
+    closeCommitConfirm();
+    btn.disabled = false; btn.textContent = '&#128640; Publish now';
+    showStatus('commitStatus',
+      `&#10003; Published! Commit SHA: <code>${esc(result.commit.sha.slice(0,7))}</code>. Live site will refresh in 1&ndash;2 minutes (advisors should hard-refresh).`,
+      'success');
+    renderAdminTabs(); renderAdminList(); renderPending();
+    // Also refresh the main visible list
+    render();
+  }catch(e){
+    btn.disabled = false; btn.textContent = '&#128640; Publish now';
+    closeCommitConfirm();
+    showStatus('commitStatus', '&#10060; '+esc(e.message), 'error');
+  }
+}
+
+function downloadBackup(){
+  const blob = new Blob([
+    `// Backup of data.enc.js taken on ${new Date().toISOString()}\n` +
+    `const ENC_DATA = ${JSON.stringify(ENC_DATA)};\n` +
+    `const DATA_VERSION = ${JSON.stringify(DATA_VERSION)};\n`
+  ], {type:'text/javascript'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'data.enc.backup.js';
+  a.click();
+}
 </script>
 </body>
 </html>
