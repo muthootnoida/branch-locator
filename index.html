@@ -76,6 +76,16 @@
   #goTop:hover{background:var(--red-dark); transform:translateY(-2px);}
   #goTop.show{display:flex;}
 
+  .uber-badge{display:flex; align-items:center; gap:10px; margin-top:12px; padding:10px 14px;
+    background:linear-gradient(to right, rgba(214,47,47,0.08), rgba(214,47,47,0));
+    border-left:4px solid var(--red); border-radius:6px;}
+  .uber-badge .cab-gif{height:40px; width:auto; display:block; flex-shrink:0;}
+  .uber-badge .uber-logo{height:22px; width:auto; display:block; flex-shrink:0;}
+  .uber-badge .ub-text{font-size:20px; font-weight:700; color:var(--red); letter-spacing:.3px; line-height:1;}
+  @media (max-width:560px){
+    .uber-badge{flex-wrap:wrap; gap:8px;}
+  }
+
   #app{display:none;}
   .gate{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--navy); padding:20px;}
   .gate-card{background:var(--navy2); border:1px solid var(--line); border-radius:18px; padding:38px 36px; width:100%; max-width:420px; text-align:center;}
@@ -160,6 +170,28 @@ const PAGE = 60;
 
 function b64(s){ return Uint8Array.from(atob(s), c=>c.charCodeAt(0)); }
 
+// Delhi/NCR districts that qualify for the Free Uber Drop facility (MFL only).
+// Defined separately so the list is easy to update without re-encrypting data.
+const NCR_UP_DISTRICTS = ['gautam buddh nagar','gautam budh nagar','gautam budha nagar','gautam budhha nagar','ghaziabad'];
+const NCR_HR_DISTRICTS = ['gurgaon','gurugram','faridabad','sonipat','sonepat'];
+
+function isNcrBranch(b){
+  const s = (b.state||'').toLowerCase().trim();
+  const d = (b.district||'').toLowerCase().trim();
+  if(s === 'delhi') return true;
+  if(s === 'uttar pradesh' && NCR_UP_DISTRICTS.includes(d)) return true;
+  if(s === 'haryana' && NCR_HR_DISTRICTS.includes(d)) return true;
+  return false;
+}
+
+function uberBadge(){
+  return `<div class="uber-badge" title="Free Uber drop facility available for Delhi &amp; NCR customers">
+    <img src="cab.gif" alt="cab" class="cab-gif">
+    <img src="uber-logo.png" alt="Uber" class="uber-logo">
+    <span class="ub-text">Drop</span>
+  </div>`;
+}
+
 async function tryDecrypt(pass){
   const enc = new TextEncoder();
   const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
@@ -232,6 +264,7 @@ function card(b){
   const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
   const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
   const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
+  const uber = (activeTab === 'MFL' && isNcrBranch(b)) ? uberBadge() : '';
   return `<div class="card">
     <div class="card-top"><h3>${esc(b.name)}</h3>${tcChip}</div>
     <div class="addr">${esc(b.addr)}</div>
@@ -243,6 +276,7 @@ function card(b){
       ${bc}${head}
     </div>
     ${copyBtn}
+    ${uber}
   </div>`;
 }
 
