@@ -353,10 +353,7 @@
         <div class="field"><label>District</label><input id="bfDistrict" type="text"></div>
         <div class="field"><label>State</label><input id="bfState" type="text"></div>
       </div>
-      <div class="field-row">
-        <div class="field"><label>Region</label><input id="bfRegion" type="text"></div>
-        <div class="field" id="headWrap"><label>Branch Head</label><input id="bfHead" type="text"></div>
-      </div>
+      <div class="field"><label>Region</label><input id="bfRegion" type="text"></div>
       <div id="bfErr" style="color:var(--red); font-size:12.5px; min-height:18px;"></div>
     </div>
     <div class="mb-actions">
@@ -371,7 +368,7 @@
   <div class="modal-box">
     <div class="mb-head">Bulk upload branches</div>
     <div class="mb-body">
-      <p style="font-size:13px; color:#4a4664; margin-bottom:10px;">Upload a CSV file with columns: <b>name, tc, addr, pin, district, state, region, head, bc</b>. Branch Name and TC are required. <a href="#" onclick="downloadCsvTemplate(event)" style="color:var(--red);">Download CSV template</a></p>
+      <p style="font-size:13px; color:#4a4664; margin-bottom:10px;">Upload a CSV file with columns: <b>name, tc, addr, pin, district, state, region, bc</b>. Branch Name and TC are required. <a href="#" onclick="downloadCsvTemplate(event)" style="color:var(--red);">Download CSV template</a></p>
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
         <div class="icon">&#128229;</div>
         <p><b>Click here or drag a CSV file</b></p>
@@ -512,7 +509,6 @@ function renderTabs(){
 function setTab(k){ activeTab = k; shown = 0; render(); }
 
 function card(b){
-  const head = b.head ? `<span class="tag">&#128100; ${esc(b.head)}</span>` : '';
   const bc = b.bc ? `<span class="tag">Branch code ${esc(b.bc)}</span>` : '';
   const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
   const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
@@ -526,7 +522,7 @@ function card(b){
       ${b.district?`<span class="tag">${esc(b.district)}</span>`:''}
       ${b.state?`<span class="tag">${esc(b.state)}</span>`:''}
       ${b.region?`<span class="tag">Region: ${esc(b.region)}</span>`:''}
-      ${bc}${head}
+      ${bc}
     </div>
     ${copyBtn}
     ${uber}
@@ -816,11 +812,9 @@ function openAddForm(){
   document.getElementById('bfDistrict').value='';
   document.getElementById('bfState').value='';
   document.getElementById('bfRegion').value='';
-  document.getElementById('bfHead').value='';
   document.getElementById('bfBc').value='';
   document.getElementById('bfErr').textContent='';
   document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
-  document.getElementById('headWrap').style.display = adminTab==='SOUTH' ? 'none' : 'flex';
   document.getElementById('branchFormOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('bfName').focus(), 60);
 }
@@ -837,11 +831,9 @@ function openEditForm(id){
   document.getElementById('bfDistrict').value = b.district||'';
   document.getElementById('bfState').value = b.state||'';
   document.getElementById('bfRegion').value = b.region||'';
-  document.getElementById('bfHead').value = b.head||'';
   document.getElementById('bfBc').value = b.bc||'';
   document.getElementById('bfErr').textContent='';
   document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
-  document.getElementById('headWrap').style.display = adminTab==='SOUTH' ? 'none' : 'flex';
   document.getElementById('branchFormOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('bfName').focus(), 60);
 }
@@ -858,7 +850,6 @@ function readFormBranch(){
     region: document.getElementById('bfRegion').value.trim(),
   };
   if(adminTab === 'SOUTH'){ b.bc = document.getElementById('bfBc').value.trim(); }
-  else { b.head = document.getElementById('bfHead').value.trim(); }
   return b;
 }
 function saveBranchForm(){
@@ -939,9 +930,9 @@ function closeBulkUpload(){ document.getElementById('bulkOverlay').classList.rem
 
 function downloadCsvTemplate(e){
   e.preventDefault();
-  const fields = ['name','tc','addr','pin','district','state','region','head','bc'];
+  const fields = ['name','tc','addr','pin','district','state','region','bc'];
   const csv = fields.join(',') + '\n' +
-    `"EXAMPLE-BRANCH NAME","9999","Sample address","110001","CENTRAL DELHI","DELHI","Delhi NCR","HEAD NAME",""`;
+    `"EXAMPLE-BRANCH NAME","9999","Sample address","110001","CENTRAL DELHI","DELHI","Delhi NCR",""`;
   const blob = new Blob([csv], {type:'text/csv'});
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -1002,7 +993,7 @@ function confirmBulkAdd(){
   if(!bulkParsedRows || !bulkParsedRows.length) return;
   for(const r of bulkParsedRows){
     const b = {name:r.name, tc:r.tc, addr:r.addr||'', pin:r.pin||'', district:r.district||'', state:r.state||'', region:r.region||''};
-    if(adminTab === 'SOUTH') b.bc = r.bc || ''; else b.head = r.head || '';
+    if(adminTab === 'SOUTH') b.bc = r.bc || '';
     pendingChanges.push({op:'add', tab:adminTab, id:uuid(), after:b});
   }
   closeBulkUpload();
@@ -1016,7 +1007,7 @@ function buildUpdatedData(){
     const list = effectiveBranches(tab);
     for(const b of list){
       if(b._op === 'delete') continue;
-      const c = {...b}; delete c._id; delete c._op; delete c._origIdx;
+      const c = {...b}; delete c._id; delete c._op; delete c._origIdx; delete c.head;
       out[tab].push(c);
     }
   }
