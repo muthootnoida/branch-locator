@@ -82,6 +82,13 @@
   .uber-badge .cab-gif{height:40px; width:auto; display:block; flex-shrink:0;}
   .uber-badge .uber-logo{height:22px; width:auto; display:block; flex-shrink:0;}
   .uber-badge .ub-text{font-size:20px; font-weight:700; color:var(--red); letter-spacing:.3px; line-height:1;}
+
+  /* ---- PRIORITY BRANCHES ---- */
+  .priority-chip{
+    display:inline-block; margin:6px 0 2px; padding:3px 10px;
+    background:#1f8a3a; color:#fff; font-size:10.5px; font-weight:700;
+    letter-spacing:.6px; border-radius:5px;
+  }
   @media (max-width:560px){
     .uber-badge{flex-wrap:wrap; gap:8px;}
   }
@@ -442,6 +449,16 @@ function uberBadge(){
   </div>`;
 }
 
+// Priority branches — show a green PRIORITY chip on the card.
+// Update this list to add/remove priority branches; values are Territory Codes (as strings).
+const PRIORITY_TCS = new Set([
+  '8623','8612','8748','8589','8628','9153','9344','8561','8655','8659',
+  '9149','9151','8666','9135','8808','8252','8555','9257','9256','9410',
+  '9126','9116','8985','9268','10009','10011','10049','10050',
+  '1000210','1000269','1000425','1005080','1005112'
+]);
+function isPriority(b){ return PRIORITY_TCS.has(String(b.tc||'').trim()); }
+
 async function tryDecrypt(pass){
   const enc = new TextEncoder();
   const baseKey = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
@@ -514,8 +531,10 @@ function card(b){
   const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
   const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
   const uber = (activeTab === 'MFL' && isNcrBranch(b)) ? uberBadge() : '';
+  const priorityChip = isPriority(b) ? `<span class="priority-chip" title="Priority branch">&#9733; PRIORITY</span>` : '';
   return `<div class="card">
     <div class="card-top"><h3>${esc(b.name)}</h3>${tcChip}</div>
+    ${priorityChip}
     <div class="addr">${esc(b.addr)}</div>
     <div class="tags">
       ${b.pin?`<span class="tag pin">PIN ${esc(b.pin)}</span>`:''}
