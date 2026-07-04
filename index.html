@@ -89,6 +89,23 @@
     background:#1f8a3a; color:#fff; font-size:10.5px; font-weight:700;
     letter-spacing:.6px; border-radius:5px;
   }
+
+  /* ---- Admin MFL flags (edit form) ---- */
+  .mfl-flags{background:#fbf6e8; border:1px solid #ecd98d; border-radius:8px; padding:12px 14px; margin:12px 0 8px;}
+  .mfl-flags-title{font-size:11px; font-weight:700; color:#7a5a00; letter-spacing:.6px; text-transform:uppercase; margin-bottom:9px;}
+  .flag-check{display:grid; grid-template-columns:auto 1fr; column-gap:10px; row-gap:1px; align-items:center; padding:7px 6px; border-radius:6px; cursor:pointer; transition:background .12s;}
+  .flag-check:hover{background:#fff;}
+  .flag-check input{width:17px; height:17px; accent-color:var(--red); cursor:pointer; grid-row:span 2;}
+  .flag-check .flag-title{font-size:13.5px; font-weight:600; color:var(--navy);}
+  .flag-check .flag-hint{font-size:11px; color:#8e7c3d;}
+
+  /* ---- Admin list row: inline Uber/Priority toggles ---- */
+  .row-flags{display:flex; gap:6px; align-items:center; margin-right:8px;}
+  .row-flag{display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:5px; font-size:11px; font-weight:600; cursor:pointer; user-select:none; border:1px solid #d8d2c1; background:#fcfaf3; color:#8e8aa8; transition:all .12s;}
+  .row-flag input{margin:0; width:12px; height:12px; accent-color:#1f8a3a; cursor:pointer;}
+  .row-flag.on-uber{background:#fdecea; border-color:#f5c6c0; color:var(--red);}
+  .row-flag.on-priority{background:#e7f7ea; border-color:#83c294; color:#1f8a3a;}
+  .row-flag:hover{filter:brightness(.97);}
   @media (max-width:560px){
     .uber-badge{flex-wrap:wrap; gap:8px;}
   }
@@ -361,6 +378,19 @@
         <div class="field"><label>State</label><input id="bfState" type="text"></div>
       </div>
       <div class="field"><label>Region</label><input id="bfRegion" type="text"></div>
+      <div id="mflFlags" class="mfl-flags" style="display:none;">
+        <div class="mfl-flags-title">MFL branch settings</div>
+        <label class="flag-check">
+          <input type="checkbox" id="bfUber">
+          <span class="flag-title">&#128663; Enable Free Uber Drop facility</span>
+          <span class="flag-hint">Shows the animated Uber Drop badge on this branch card</span>
+        </label>
+        <label class="flag-check">
+          <input type="checkbox" id="bfPriority">
+          <span class="flag-title">&#9733; Mark as Priority branch</span>
+          <span class="flag-hint">Shows the green PRIORITY badge on this branch card</span>
+        </label>
+      </div>
       <div id="bfErr" style="color:var(--red); font-size:12.5px; min-height:18px;"></div>
     </div>
     <div class="mb-actions">
@@ -525,13 +555,25 @@ function renderTabs(){
 
 function setTab(k){ activeTab = k; shown = 0; render(); }
 
+// Effective state: explicit b.uber / b.priority takes precedence; auto-detection is fallback.
+function shouldShowUber(b){
+  if(b.uber === true) return true;
+  if(b.uber === false) return false;
+  return isNcrBranch(b);
+}
+function shouldShowPriority(b){
+  if(b.priority === true) return true;
+  if(b.priority === false) return false;
+  return PRIORITY_TCS.has(String(b.tc||'').trim());
+}
+
 function card(b){
   const bc = b.bc ? `<span class="tag">Branch code ${esc(b.bc)}</span>` : '';
   const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
   const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
   const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
-  const uber = (activeTab === 'MFL' && isNcrBranch(b)) ? uberBadge() : '';
-  const priorityChip = isPriority(b) ? `<span class="priority-chip" title="Priority branch">&#9733; PRIORITY</span>` : '';
+  const uber = (activeTab === 'MFL' && shouldShowUber(b)) ? uberBadge() : '';
+  const priorityChip = shouldShowPriority(b) ? `<span class="priority-chip" title="Priority branch">&#9733; PRIORITY</span>` : '';
   return `<div class="card">
     <div class="card-top"><h3>${esc(b.name)}</h3>${tcChip}</div>
     ${priorityChip}
@@ -801,23 +843,49 @@ function renderAdminList(){
   const q = adminSearchQ;
   const filtered = q ? list.filter(b => (b.name+' '+b.tc+' '+b.district+' '+b.pin+' '+b.addr).toLowerCase().includes(q)) : list;
   const slice = filtered.slice(0, 200);
+  const isMFL = adminTab === 'MFL';
   const html = slice.map(b => {
     const cls = b._op ? 'pending-'+b._op : '';
     const undo = b._op ? `<button class="undo-btn" onclick="undoChange('${b._id}')">Undo</button>` : '';
     const editDel = b._op==='delete' ? '' : `
       <button class="edit-btn" onclick="openEditForm('${b._id}')">Edit</button>
       <button class="del-btn" onclick="deleteBranch('${b._id}')">Delete</button>`;
+    let rowFlags = '';
+    if(isMFL && b._op !== 'delete'){
+      const u = shouldShowUber(b), p = shouldShowPriority(b);
+      rowFlags = `<div class="row-flags">
+        <label class="row-flag ${u?'on-uber':''}" title="Toggle Uber Drop facility"><input type="checkbox" ${u?'checked':''} onchange="toggleRowFlag('${b._id}','uber',this.checked)">&#128663; Uber</label>
+        <label class="row-flag ${p?'on-priority':''}" title="Toggle Priority badge"><input type="checkbox" ${p?'checked':''} onchange="toggleRowFlag('${b._id}','priority',this.checked)">&#9733; Priority</label>
+      </div>`;
+    }
     return `<div class="branch-row ${cls}">
       <div class="info">
         <b>${esc(b.name||'(unnamed)')}</b>${b.tc?` &middot; TC ${esc(b.tc)}`:''}
         <div class="meta">${esc(b.addr||'')}${b.pin?` &middot; PIN ${esc(b.pin)}`:''}${b.district?` &middot; ${esc(b.district)}`:''}${b.state?', '+esc(b.state):''}</div>
       </div>
-      <div class="actions">${undo}${editDel}</div>
+      <div class="actions">${rowFlags}${undo}${editDel}</div>
     </div>`;
   }).join('');
   document.getElementById('adminBranchList').innerHTML = html || '<div style="padding:20px; text-align:center; color:#8e8aa8;">No branches match this search.</div>';
   document.getElementById('adminListMeta').textContent =
     `Showing ${slice.length} of ${filtered.length.toLocaleString('en-IN')} branch(es)${q?' matching "'+q+'"':''} in ${adminTab}. Use the search to narrow down.`;
+}
+
+// Quick inline toggle for uber/priority flags (MFL only). Creates/updates an edit pending change.
+function toggleRowFlag(id, flag, val){
+  // If this branch has a pending 'add', modify the add.after directly
+  const addCh = pendingChanges.find(c => c.op==='add' && c.id===id);
+  if(addCh){ addCh.after[flag] = val; renderAdminList(); renderPending(); return; }
+  // If there is an existing edit, update its after
+  const editCh = pendingChanges.find(c => c.op==='edit' && c.id===id);
+  if(editCh){ editCh.after[flag] = val; renderAdminList(); renderPending(); return; }
+  // Otherwise, create a new edit change carrying the current record + this toggle
+  const cur = effectiveBranches(adminTab).find(x => x._id === id);
+  if(!cur) return;
+  const after = {...cur, [flag]: val};
+  delete after._id; delete after._op; delete after._origIdx;
+  pendingChanges.push({op:'edit', tab:adminTab, id, after});
+  renderAdminList(); renderPending();
 }
 
 // ---- Add / Edit form ----
@@ -832,8 +900,11 @@ function openAddForm(){
   document.getElementById('bfState').value='';
   document.getElementById('bfRegion').value='';
   document.getElementById('bfBc').value='';
+  document.getElementById('bfUber').checked = false;
+  document.getElementById('bfPriority').checked = false;
   document.getElementById('bfErr').textContent='';
   document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
+  document.getElementById('mflFlags').style.display = adminTab==='MFL' ? 'block' : 'none';
   document.getElementById('branchFormOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('bfName').focus(), 60);
 }
@@ -851,8 +922,11 @@ function openEditForm(id){
   document.getElementById('bfState').value = b.state||'';
   document.getElementById('bfRegion').value = b.region||'';
   document.getElementById('bfBc').value = b.bc||'';
+  document.getElementById('bfUber').checked = shouldShowUber(b);
+  document.getElementById('bfPriority').checked = shouldShowPriority(b);
   document.getElementById('bfErr').textContent='';
   document.getElementById('bcWrap').style.display = adminTab==='SOUTH' ? 'flex' : 'none';
+  document.getElementById('mflFlags').style.display = adminTab==='MFL' ? 'block' : 'none';
   document.getElementById('branchFormOverlay').classList.add('show');
   setTimeout(()=>document.getElementById('bfName').focus(), 60);
 }
@@ -869,6 +943,10 @@ function readFormBranch(){
     region: document.getElementById('bfRegion').value.trim(),
   };
   if(adminTab === 'SOUTH'){ b.bc = document.getElementById('bfBc').value.trim(); }
+  if(adminTab === 'MFL'){
+    b.uber = document.getElementById('bfUber').checked;
+    b.priority = document.getElementById('bfPriority').checked;
+  }
   return b;
 }
 function saveBranchForm(){
