@@ -24,6 +24,12 @@
   .brand-text span{color:var(--gold); font-size:10.5px; font-weight:600; letter-spacing:2px;}
   .nav-right{color:#cfcce4; font-size:12.5px; background:var(--navy3); border:1px solid var(--line); padding:7px 14px; border-radius:999px;}
   .nav-right .lock{color:var(--gold); margin-right:6px;}
+  .nav-toll{display:flex; align-items:center; gap:11px; background:var(--navy3); border:1px solid var(--line); padding:8px 18px; border-radius:999px; text-decoration:none; box-shadow:inset 0 0 0 1px rgba(232,163,61,.14);}
+  .nav-toll .toll-icon{color:var(--gold); font-size:17px; line-height:1;}
+  .nav-toll .toll-text{display:flex; flex-direction:column; line-height:1.15;}
+  .nav-toll .toll-text b{color:var(--gold); font-size:9.5px; font-weight:700; letter-spacing:1.8px; text-transform:uppercase;}
+  .nav-toll .toll-text .toll-num{color:#fff; font-size:16px; font-weight:700; letter-spacing:.6px;}
+  @media (max-width:760px){ .nav-toll .toll-text b{display:none;} .nav-toll{padding:7px 13px;} .nav-toll .toll-text .toll-num{font-size:14px;} }
 
   .wrap{max-width:1080px; margin:0 auto; padding:28px 20px 60px;}
 
@@ -259,6 +265,10 @@
     <div class="brand-divider"></div>
     <div class="brand-text"><b>Muthoot Finance</b><span>BRANCH LOCATOR</span></div>
   </div>
+  <a class="nav-toll" href="tel:18003131212" title="Muthoot Finance Toll-Free Number">
+    <span class="toll-icon">&#128222;</span>
+    <span class="toll-text"><b>Toll-Free</b><span class="toll-num">1800&nbsp;313&nbsp;1212</span></span>
+  </a>
   <div class="nav-right"><span class="lock">&#128274;</span><span id="versionBadge"></span></div>
 </nav>
 
