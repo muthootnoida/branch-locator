@@ -10,7 +10,7 @@
   :root{
     --navy:#191731; --navy2:#1e1b3a; --navy3:#262247;
     --red:#d62f2f; --red-dark:#b32424; --gold:#e8a33d;
-    --cream:#f4f1ea; --ink:#23213a; --muted:#8e8aa8; --line:#3a3660;
+    --cream:#f2f3f5; --ink:#23213a; --muted:#8e8aa8; --line:#3a3660;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{font-family:'Poppins',sans-serif; background:var(--cream); color:var(--ink); min-height:100vh;}
@@ -579,9 +579,8 @@ function shouldShowPriority(b){
 
 function card(b){
   const bc = b.bc ? `<span class="tag">Branch code ${esc(b.bc)}</span>` : '';
-  const showTC = activeTab !== 'MML'; // MML branches don't use territory codes
-  const tcChip = showTC ? `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>` : '';
-  const copyBtn = showTC ? `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>` : '';
+  const tcChip = `<span class="chip">TC ${esc(b.tc)||'&mdash;'}</span>`;
+  const copyBtn = `<button class="copy-btn" onclick="copyCode(this,'${esc(b.tc)}')">&#128203; Copy territory code</button>`;
   const uber = (activeTab === 'MFL' && shouldShowUber(b)) ? uberBadge() : '';
   const priorityChip = shouldShowPriority(b) ? `<span class="priority-chip" title="Priority branch">&#9733; PRIORITY</span>` : '';
   return `<div class="card">
